@@ -57,7 +57,7 @@ for cu_img in myList:
     images.append(current_Img)
     personNames.append(os.path.splitext(cu_img)[0])
 print(personNames)
-speak("Image Encoding process is completed")
+speak("Image Encoding process 80 persent completed")
 
 
 def faceEncodings(images):
@@ -69,7 +69,7 @@ def faceEncodings(images):
     return encodeList
 
 def entery(name):
-    with open('entery.csv', 'r+') as f:
+    with open('data.csv', 'r+') as f:
         myDataList = f.readlines()
         nameList = []
         for line in myDataList:
@@ -80,6 +80,7 @@ def entery(name):
             tStr = time_now.strftime('%H:%M:%S')
             dStr = time_now.strftime('%d/%m/%Y')
             f.writelines(f'\n{name},{tStr},{dStr}')
+            noti(f'Data has been store ')
 
 #starting wish me Function
 def wishMe(name):
@@ -148,7 +149,7 @@ def bytes_to_mb(bytes):
   return int(bytes/MB)
 
 encodeListKnown = faceEncodings(images)
-speak('All Encodings Complete!!!')
+speak('Image Encoding process 100 persent completed')
 
 
 class MainThread(QThread):
@@ -183,7 +184,8 @@ class MainThread(QThread):
                 speak("Image are Save in folder")
                 noti("Image are capture")
 
-            elif'speedtest' in query:
+            elif'speed test' in query:
+                speak("please wait speed test mode in process")
                 st = speedtest.Speedtest()
                 D=st.download()
                 u=st.upload()
@@ -191,6 +193,7 @@ class MainThread(QThread):
                 val2 = bytes_to_mb(u)
                 speak(f'your downloading speed is {val} MB per second')
                 speak(f'your uploding speed is {val2} MB per second')
+                noti(f"Download speed\t{val}\nUpload speed\t{val2}")
                 
             #show image
             elif'show image' in query:            

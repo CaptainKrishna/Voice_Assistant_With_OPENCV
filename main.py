@@ -5,6 +5,7 @@ import os
 import mysql.connector
 import wikipedia
 import pyjokes
+import speedtest
 import pyautogui
 import webbrowser
 import smtplib
@@ -44,6 +45,41 @@ engine.setProperty('voice', voices[1].id)
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
+
+speak("Image Encoding in process please wait")
+path = 'images'
+images = []
+personNames = []
+myList = os.listdir(path)
+print(myList)
+for cu_img in myList:
+    current_Img = cv2.imread(f'{path}/{cu_img}')
+    images.append(current_Img)
+    personNames.append(os.path.splitext(cu_img)[0])
+print(personNames)
+speak("Image Encoding process is completed")
+
+
+def faceEncodings(images):
+    encodeList = []
+    for img in images:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        encode = face_recognition.face_encodings(img)[0]
+        encodeList.append(encode)
+    return encodeList
+
+def entery(name):
+    with open('entery.csv', 'r+') as f:
+        myDataList = f.readlines()
+        nameList = []
+        for line in myDataList:
+            entry = line.split(',')
+            nameList.append(entry[0])
+        if name not in nameList:
+            time_now = datetime.now()
+            tStr = time_now.strftime('%H:%M:%S')
+            dStr = time_now.strftime('%d/%m/%Y')
+            f.writelines(f'\n{name},{tStr},{dStr}')
 
 #starting wish me Function
 def wishMe(name):
@@ -106,66 +142,13 @@ def googlesearch(query):
     webbrowser.open("https://www.google.com/search?q="+query+"&rlz=1C1CHZN_enIN949IN949&oq="+query +
                     "&aqs=chrome..69i57j0i131i433j0i433j0i131i433l3j0i433j0i131i433j0i433j0.2513j0j15&sourceid=chrome&ie=UTF-8")
 
-# encoding the faces
-def faceEncodings(images):
-    encodeList = []
-    for img in images:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        encode = face_recognition.face_encodings(img)[0]
-        encodeList.append(encode)
-    return encodeList
+def bytes_to_mb(bytes):
+  KB = 1024 
+  MB = KB * 1024 
+  return int(bytes/MB)
 
-# save the user Data
-def attendance1(name):
-    with open('data.csv', 'r+') as f:
-        myDataList = f.readlines()
-        nameList = []
-        for line in myDataList:
-            entry = line.split(',')
-            nameList.append(entry[0])
-        if name not in nameList:
-            time_now = datetime.datetime.now()
-            tStr = time_now.strftime('%H:%M:%S')
-            dStr = time_now.strftime('%d/%m/%Y')
-            speak(f"Welcome {name}")
-            f.writelines(f'\n{name},{tStr},{dStr}')
-
-def openc():
-    cap = cv2.VideoCapture(0)
-    while True:
-        ret, frame = cap.read()
-        faces = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
-        faces = cv2.cvtColor(faces, cv2.COLOR_BGR2RGB)
-
-        facesCurrentFrame = face_recognition.face_locations(faces)
-        encodesCurrentFrame = face_recognition.face_encodings(
-            faces, facesCurrentFrame)
-        encodeListKnown=""
-        personNames=[]
-        for encodeFace, faceLoc in zip(encodesCurrentFrame, facesCurrentFrame):
-            matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
-            faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
-            # print(faceDis)
-            matchIndex = np.argmin(faceDis)
-            if matches[matchIndex] != True:
-                break
-            if matches[matchIndex]:
-                name = personNames[matchIndex].upper()
-                # print(name)
-                y1, x2, y2, x1 = faceLoc
-                y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.rectangle(frame, (x1, y2 - 35), (x2, y2),
-                              (0, 255, 0), cv2.FILLED)
-                cv2.putText(frame, name, (x1 + 6, y2 - 6),
-                            cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
-                attendance1(name)
-        cv2.imshow('Webcam', frame)
-        if cv2.waitKey(1) == 13:
-            pyautogui.press("enter")
-            break
-    cap.release()
-    cv2.destroyAllWindows()
+encodeListKnown = faceEncodings(images)
+speak('All Encodings Complete!!!')
 
 
 class MainThread(QThread):
@@ -174,27 +157,14 @@ class MainThread(QThread):
         self.TaskExecution()
 
     def TaskExecution(self):
-        speak("Images are incoding stage , please wait")
-        path = 'images'
-        images = []
-        personNames = []
-        myList = os.listdir(path)
-        print(myList)
-        for cu_img in myList:
-            current_Img = cv2.imread(f'{path}/{cu_img}')
-            images.append(current_Img)
-            personNames.append(os.path.splitext(cu_img)[0])
-            print(personNames)
-
-            encodeListKnown = faceEncodings(images)
-        speak('All Encoading are Completed!!!')
-
-        wishMe("Krishna")
+        
+        wishMe("sir")
 
         while True:
             query = takeCommand().lower()
             speakquery(query)
-           
+
+            #google maps query
             if 'where is' in query:       
                 query = query . replace('where is', '')
                 speak(f'serching {query} on maps ')
@@ -212,7 +182,16 @@ class MainThread(QThread):
                 im1 = pyautogui.screenshot("hello.jpg")
                 speak("Image are Save in folder")
                 noti("Image are capture")
-        
+
+            elif'speedtest' in query:
+                st = speedtest.Speedtest()
+                D=st.download()
+                u=st.upload()
+                val = bytes_to_mb(D)
+                val2 = bytes_to_mb(u)
+                speak(f'your downloading speed is {val} MB per second')
+                speak(f'your uploding speed is {val2} MB per second')
+                
             #show image
             elif'show image' in query:            
                 im = Image.open(r"hello.jpg") 
@@ -351,7 +330,7 @@ class MainThread(QThread):
 
             # security Mode for motion detaction
             elif'security mode' in query:
-                cam = cv2.VideoCapture(1)
+                cam = cv2.VideoCapture(0)
                 while cam.isOpened():
                     ret, frame1 = cam.read()
                     ret, frame2 = cam.read()
@@ -380,9 +359,41 @@ class MainThread(QThread):
                         break
                     cv2.imshow('Jay Security Eye', frame1)
         
-            # Normal Mode for motion detaction   
+            # Normal Mode for open camera   
             elif 'normal check' in query or 'who is there' in query or 'check' in query:
-                openc()
+                cap = cv2.VideoCapture(0)
+
+                while True:
+                    ret, frame = cap.read()
+                    faces = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
+                    faces = cv2.cvtColor(faces, cv2.COLOR_BGR2RGB)
+
+                    facesCurrentFrame = face_recognition.face_locations(faces)
+                    encodesCurrentFrame = face_recognition.face_encodings(faces, facesCurrentFrame)
+
+                    for encodeFace, faceLoc in zip(encodesCurrentFrame, facesCurrentFrame):
+                        matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
+                        faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
+                        # print(faceDis)
+                        matchIndex = np.argmin(faceDis)
+
+                        if matches[matchIndex]:
+                            name = personNames[matchIndex].upper()
+                            # print(name)
+                            y1, x2, y2, x1 = faceLoc
+                            y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
+                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                            cv2.rectangle(frame, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
+                            cv2.putText(frame, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
+                            entery(name)
+
+                    cv2.imshow('Webcam', frame)
+                    if cv2.waitKey(1) == 13:
+                        break
+
+                cap.release()
+                cv2.destroyAllWindows()
+               
             
 startExecution = MainThread()
 

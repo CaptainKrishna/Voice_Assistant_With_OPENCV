@@ -1,3 +1,4 @@
+import datetime
 import sys
 import pyttsx3
 import speech_recognition as sr
@@ -30,7 +31,6 @@ from urllib.request import urlopen
 from random import*
 from playsound import playsound
 from PIL import Image
-import datetime
 from Jarvis.features.gui import Ui_MainWindow
 from Jarvis.config import config
 from httplib2 import RelativeURIError
@@ -76,10 +76,8 @@ def entery(name):
             entry = line.split(',')
             nameList.append(entry[0])
         if name not in nameList:
-            time_now = datetime.now()
-            tStr = time_now.strftime('%H:%M:%S')
-            dStr = time_now.strftime('%d/%m/%Y')
-            f.writelines(f'\n{name},{tStr},{dStr}')
+            strTime = datetime.datetime.now().strftime("%H:%M:%S")
+            f.writelines(f'\n{name},{strTime}')
             noti(f'Data has been store ')
 
 #starting wish me Function
@@ -193,7 +191,7 @@ class MainThread(QThread):
                 val2 = bytes_to_mb(u)
                 speak(f'your downloading speed is {val} MB per second')
                 speak(f'your uploding speed is {val2} MB per second')
-                noti(f"Download speed\t{val}\nUpload speed\t{val2}")
+                noti(f"Download speed\t{val} MB\nUpload speed\t{val2} MB")
                 
             #show image
             elif'show image' in query:            
@@ -252,6 +250,7 @@ class MainThread(QThread):
                 a = pyjokes.get_joke()
                 print(a)
                 speak(a)
+                speak("hahahahahaha")
 
             # sending Mail to contact
             elif 'send email to' in query:
@@ -333,6 +332,7 @@ class MainThread(QThread):
 
             # security Mode for motion detaction
             elif'security mode' in query:
+                speak("High security mode on")
                 cam = cv2.VideoCapture(0)
                 while cam.isOpened():
                     ret, frame1 = cam.read()
@@ -359,11 +359,13 @@ class MainThread(QThread):
                             print("Email Has some problem")
                     # playsound('D:\\final year\\voiceassistant\\alert.wav')
                     if cv2.waitKey(10) == ord('q'):
+                        speak("Exit High security mode")
                         break
                     cv2.imshow('Jay Security Eye', frame1)
         
             # Normal Mode for open camera   
             elif 'normal check' in query or 'who is there' in query or 'check' in query:
+                speak("webcam are startings")
                 cap = cv2.VideoCapture(0)
 
                 while True:
@@ -391,7 +393,8 @@ class MainThread(QThread):
                             entery(name)
 
                     cv2.imshow('Webcam', frame)
-                    if cv2.waitKey(1) == 13:
+                    if cv2.waitKey(10) == ord('q'):
+                        speak("Exit webcam mode")
                         break
 
                 cap.release()

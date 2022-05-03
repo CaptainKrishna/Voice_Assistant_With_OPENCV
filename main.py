@@ -35,7 +35,7 @@ from Jarvis.features.gui import Ui_MainWindow
 from Jarvis.config import config
 from httplib2 import RelativeURIError
 from Jarvis import JarvisAssistant
-
+import psutil, math
 # voice assistant Voice
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -92,7 +92,7 @@ def wishMe(name):
     else:
         speak(f"""Good Evening 
                 {name} !""")
-        speak("I am  Jay , your personal Assistant \t what can i help you")
+    speak("I am  Jay , your personal Assistant \t what can i help you")
 
 #push notification Function
 def noti(notifi):
@@ -114,6 +114,26 @@ def takeCommand():
         print("Sorry sir please can you say that again..")
         return 'None'
     return query
+
+def convert_size(size_bytes):
+   if size_bytes == 0:
+       return "0B"
+   size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+   i = int(math.floor(math.log(size_bytes, 1024)))
+   p = math.pow(1024, i)
+   s = round(size_bytes / p, 2)
+   return "%s %s" % (s, size_name[i])
+
+def system_stats():
+    cpu_stats = str(psutil.cpu_percent())
+    battery_percent = psutil.sensors_battery().percent
+    memory_in_use = convert_size(psutil.virtual_memory().used)
+    total_memory = convert_size(psutil.virtual_memory().total)
+    final_res = f" {cpu_stats} percent of CPU, {memory_in_use} of RAM out of total {total_memory}  is being used and battery level is at {battery_percent} percent"
+    speak("Checking system infomation ")
+    speak("loading system infomation ")
+    speak("currently your system ")
+    speak(final_res)
 
 # email sending
 def sendEmail(to, content):
@@ -157,8 +177,8 @@ class MainThread(QThread):
 
     def TaskExecution(self):
         
+        system_stats()
         wishMe("sir")
-
         while True:
             query = takeCommand().lower()
             speakquery(query)
@@ -175,7 +195,8 @@ class MainThread(QThread):
                 query = query . replace('search', '')
                 googlesearch(query)
                 noti("task completed")
-        
+            elif 'system' in query:
+                system_stats()
             #Taking screen shot
             elif 'take a screen'in query:
                 im1 = pyautogui.screenshot("hello.jpg")
@@ -415,14 +436,22 @@ class Main(QMainWindow):
     def __del__(self):
         sys.stdout = sys.__stdout__
 
-    # def run(self):
-    #     self.TaskExection
+    def run(self):
+        self.TaskExection
     def startTask(self):
         self.ui.movie = QtGui.QMovie("Jarvis/utils/images/live_wallpaper.gif")
         self.ui.label.setMovie(self.ui.movie)
         self.ui.movie.start()
         self.ui.movie.start()
         startExecution.start()
+
+    def showTime(self):
+        current_time = QTime.currentTime()
+        current_date = QDate.currentDate()
+        label_time = current_time.toString('hh:mm:ss')
+        label_date = current_date.toString(Qt.ISODate)
+        self.ui.textBrowser.setText(label_date)
+        self.ui.textBrowser_2.setText(label_time)
 
 app = QApplication(sys.argv)
 jarvis = Main()

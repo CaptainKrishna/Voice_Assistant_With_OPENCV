@@ -68,7 +68,7 @@ def faceEncodings(images):
         encodeList.append(encode)
     return encodeList
 
-def entery(name):
+def entry(name):
     with open('data.csv', 'r+') as f:
         myDataList = f.readlines()
         nameList = []
@@ -129,7 +129,9 @@ def system_stats():
     battery_percent = psutil.sensors_battery().percent
     memory_in_use = convert_size(psutil.virtual_memory().used)
     total_memory = convert_size(psutil.virtual_memory().total)
-    final_res = f" {cpu_stats} percent of CPU, {memory_in_use} of RAM out of total {total_memory}  is being used and battery level is at {battery_percent} percent"
+    final_res = f""" {cpu_stats} percent of CPU, 
+    {memory_in_use} of RAM out of total {total_memory}  is being used and 
+    battery level is at {battery_percent} percent"""
     speak("Checking system infomation ")
     speak("loading system infomation ")
     speak("currently your system ")
@@ -195,6 +197,7 @@ class MainThread(QThread):
                 query = query . replace('search', '')
                 googlesearch(query)
                 noti("task completed")
+          
             elif 'system' in query:
                 system_stats()
             #Taking screen shot
@@ -411,7 +414,7 @@ class MainThread(QThread):
                             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                             cv2.rectangle(frame, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
                             cv2.putText(frame, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
-                            entery(name)
+                            entry(name)
 
                     cv2.imshow('Webcam', frame)
                     if cv2.waitKey(10) == ord('q'):

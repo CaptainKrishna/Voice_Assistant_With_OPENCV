@@ -1,5 +1,8 @@
 # Jay Voice Assistant
 
+
+https://raw.githubusercontent.com/CaptainKrishna/Voice_Assistant_With_OPENCV/master/image.png
+
 #### For a cool demo of this project watch this 
 
 It can do a lot of cool things, some of them being:

@@ -1,35 +1,41 @@
 # Jay Voice Assistant
+---
 
+![example Image](/image.png)
 
-https://raw.githubusercontent.com/CaptainKrishna/Voice_Assistant_With_OPENCV/master/image.png
+---
+
 
 #### For a cool demo of this project watch this 
 
-It can do a lot of cool things, some of them being:
-- Security Camera
-- Motion Detection 
-- Tell current time and date
-- Open any website
-- Tells about weather of any city
-- Tells your current system status (RAM Usage, battery health, CPU usage)
-- Tells about any person (via Wikipedia)
-- Can search anything on Google 
-- Can play any song on YouTube
-- Plays music
-- Send email (with subject and content)
-- Answer any generic question (via Wolframalpha)
-- Take important note in notepad
-- Tells a random joke
-- Tells your IP address
-- Can switch the window
-- Can take screenshot and save it with custom filename
-- Has a cool Graphical User Interface
+#### It can do a lot of cool things, some of them being:  
+>  
+>- Security Camera
+>- Motion Detection 
+>- Tell current time and date
+>- Open any website
+>- Tells about weather of any city
+>- Tells your current system status (RAM Usage, battery health, CPU usage)
+>- Tells about any person (via Wikipedia)
+>- Can search anything on Google 
+>- Can play any song on YouTube
+>- Plays music
+>- Send email (with subject and content)
+>- Answer any generic question (via Wolframalpha)
+>- Take important note in notepad
+>- Tells a random joke
+>- Tells your IP address
+>- Can switch the window
+>- Can take screenshot and save it with custom filename
+>- Has a cool Graphical User Interface
 
 ## API Keys
 To run this program you will require a bunch of API keys. Register your API key by clicking the following links
 
-- [OpenWeatherMap API](https://openweathermap.org/api)
-- [Wolframalpha](https://www.wolframalpha.com/)
+>- [OpenWeatherMap API](https://openweathermap.org/api)
+  
+  
+>- [Wolframalpha](https://www.wolframalpha.com/)
   
 ## Installation
 
@@ -69,51 +75,60 @@ To run this program you will require a bunch of API keys. Register your API key 
   - Add the voice commands through which you want to invoke the function
 
 ## How to install Open cv
-step 1 pip install opencv
+>pip install opencv
 ## How to install FaceRecognitation
 
 How to Install Face Recognition in Python on Windows?
 Last Updated : 26 Oct, 2021
 In this article, we will learn how to install Face Recognition in Python on Windows. Recognize and manipulate faces from Python or from the command line with the world’s simplest face recognition library. Built using dlib’s state-of-the-art face recognition built with deep learning.
 
-Installing Face Recognition on Windows :
+>Installing Face Recognition on Windows :
 Prerequisites:
-Face Recognition module can only be installed for Python version 3.7 and 3.8.
+Face Recognition module can only be installed for Python version 3.7 and 3.8.  
+## After Installing OpenCV
+___
 
-# Step 1: Install git for Windows
+### Step 1
+> Install git for Windows
 
-# Step 2: Clone this repository and go inside the folder using the following commands
+### Step 2
+> Clone this repository and go inside the folder using the following commands
+>
+ >git clone https://github.com/RvTechiNNovate/face_recog_dlib_file.git   
+>
+ >cd face_recog_dlib_file
+ >
+ >git clone face_recog
 
-# git clone https://github.com/RvTechiNNovate/face_recog_dlib_file.git
-#   cd face_recog_dlib_file
-#   git clone face_recog
+### Step 3
+> Enter the following command to install dlib and cmake using pip
+>
+>>Python 3.8:  
+<br/>
+>pip install dlib-19.19.0-cp38-cp38-win_amd64.whl  
+>pip install cmake  
+>pip install dlib for python 3.8  
 
-#  Step 3: Enter the following command to install dlib and cmake using pip
-
-Python 3.8:
-pip install dlib-19.19.0-cp38-cp38-win_amd64.whl
-pip install cmake
-pip install dlib for python 3.8
-
-Method 1: Using pip to install Face Recognition Package
+## Method 1: Using pip to install Face Recognition Package
 Follow the below steps to install the Face Recognition package on Windows using pip:
 
-Step 1: Install the latest Python3 in Windows 
+---  
+>Step 1: Install the latest Python3 in Windows 
 
-Step 2: Check if pip and python are correctly installed.
+>Step 2: Check if pip and python are correctly installed.
 
-python --version
-pip --version
-checking python and pip version in Windows 
+>python --version  
+pip --version  
+checking python and pip version in Windows   
 
-Step 3: Upgrade your pip to avoid errors during installation.
+>Step 3: Upgrade your pip to avoid errors during installation.
 
-pip install --upgrade pip
+>pip install --upgrade pip  
 upgrading pip in Windows 
 
-Step 4: Enter the following command to install Face Recognition using pip3.
+>Step 4: Enter the following command to install Face Recognition using pip3.
 
-pip install face-recognition
+># pip install face-recognition
 
 
 Method 2: Using setup.py to install Face Recognition 

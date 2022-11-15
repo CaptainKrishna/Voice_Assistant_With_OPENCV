@@ -35,16 +35,20 @@ from Jarvis.features.gui import Ui_MainWindow
 from Jarvis.config import config
 from httplib2 import RelativeURIError
 from Jarvis import JarvisAssistant
-import psutil, math
+import psutil
+import math
 # voice assistant Voice
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[0].id)
 
-#speaking Function
+# speaking Function
+
+
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
+
 
 speak("Image Encoding in process please wait")
 path = 'images'
@@ -68,6 +72,7 @@ def faceEncodings(images):
         encodeList.append(encode)
     return encodeList
 
+
 def entry(name):
     with open('data.csv', 'r+') as f:
         myDataList = f.readlines()
@@ -80,7 +85,9 @@ def entry(name):
             f.writelines(f'\n{name},{strTime}')
             noti(f'Data has been store ')
 
-#starting wish me Function
+# starting wish me Function
+
+
 def wishMe(name):
     hour = int(datetime.datetime.now().hour)
     if hour >= 0 and hour < 12:
@@ -94,11 +101,16 @@ def wishMe(name):
                 {name} !""")
     speak("I am  Jay , your personal Assistant \t what can i help you")
 
-#push notification Function
-def noti(notifi):
-     Notification(title='Task completed', description=notifi,duration=5, urgency='normal').send()
+# push notification Function
 
-#voice input command
+
+def noti(notifi):
+    Notification(title='Task completed', description=notifi,
+                 duration=5, urgency='normal').send()
+
+# voice input command
+
+
 def takeCommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -115,14 +127,16 @@ def takeCommand():
         return 'None'
     return query
 
+
 def convert_size(size_bytes):
-   if size_bytes == 0:
-       return "0B"
-   size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-   i = int(math.floor(math.log(size_bytes, 1024)))
-   p = math.pow(1024, i)
-   s = round(size_bytes / p, 2)
-   return "%s %s" % (s, size_name[i])
+    if size_bytes == 0:
+        return "0B"
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, i)
+    s = round(size_bytes / p, 2)
+    return "%s %s" % (s, size_name[i])
+
 
 def system_stats():
     cpu_stats = str(psutil.cpu_percent())
@@ -138,6 +152,8 @@ def system_stats():
     speak(final_res)
 
 # email sending
+
+
 def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
@@ -147,8 +163,11 @@ def sendEmail(to, content):
     server.close()
 
 # searching data on google
+
+
 def speakquery(answe):
-    con = mysql.connector.connect(host="localhost", user="root", passwd="Krishna@123", database="voice")
+    con = mysql.connector.connect(
+        host="localhost", user="root", passwd="Krishna@123", database="voice")
     mycursor = con.cursor()
     sql = "select * from `voicequery` where `query` like '" + answe + "';"
     mycursor.execute(sql)
@@ -158,50 +177,54 @@ def speakquery(answe):
         speak(x[2])
 
 # simple Google search
+
+
 def googlesearch(query):
     speak(f'searching {query} on google')
     webbrowser.open("https://www.google.com/search?q="+query+"&rlz=1C1CHZN_enIN949IN949&oq="+query +
                     "&aqs=chrome..69i57j0i131i433j0i433j0i131i433l3j0i433j0i131i433j0i433j0.2513j0j15&sourceid=chrome&ie=UTF-8")
 
-def bytes_to_mb(bytes):
-  KB = 1024 
-  MB = KB * 1024 
-  return int(bytes/MB)
 
-encodeListKnown = faceEncodings(images)
-speak('Image Encoding process 100 persent completed')
+def bytes_to_mb(bytes):
+    KB = 1024
+    MB = KB * 1024
+    return int(bytes/MB)
+
+# encodeListKnown = faceEncodings(images)
+# speak('Image Encoding process 100 persent completed')
 
 
 class MainThread(QThread):
-    
+
     def run(self):
         self.TaskExecution()
 
     def TaskExecution(self):
-        
+
         system_stats()
         wishMe("sir")
         while True:
             query = takeCommand().lower()
             speakquery(query)
 
-            #google maps query
-            if 'where is' in query:       
+            # google maps query
+            if 'where is' in query:
                 query = query . replace('where is', '')
                 speak(f'serching {query} on maps ')
-                webbrowser.open("https://www.google.co.in/maps/place/" + query+'')
+                webbrowser.open(
+                    "https://www.google.co.in/maps/place/" + query+'')
                 noti(f"Serching {query}")
-        
-            #Google search query   
+
+            # Google search query
             elif'search' in query:
                 query = query . replace('search', '')
                 googlesearch(query)
                 noti("task completed")
-          
+
             elif 'system' in query:
                 system_stats()
-            #Taking screen shot
-            elif 'take a screen'in query:
+            # Taking screen shot
+            elif 'take a screen' in query:
                 im1 = pyautogui.screenshot("hello.jpg")
                 speak("Image are Save in folder")
                 noti("Image are capture")
@@ -209,20 +232,20 @@ class MainThread(QThread):
             elif'speed test' in query:
                 speak("please wait speed test mode in process")
                 st = speedtest.Speedtest()
-                D=st.download()
-                u=st.upload()
+                D = st.download()
+                u = st.upload()
                 val = bytes_to_mb(D)
                 val2 = bytes_to_mb(u)
                 speak(f'your downloading speed is {val} MB per second')
                 speak(f'your uploding speed is {val2} MB per second')
                 noti(f"Download speed\t{val} MB\nUpload speed\t{val2} MB")
-                
-            #show image
-            elif'show image' in query:            
-                im = Image.open(r"hello.jpg") 
+
+            # show image
+            elif'show image' in query:
+                im = Image.open(r"hello.jpg")
                 speak("Image are opening")
                 im.show()
-        
+
             # serch on wikipedia
             elif 'wikipedia' in query or 'tell me about' in query:
                 try:
@@ -236,7 +259,7 @@ class MainThread(QThread):
                     speak(results)
                 except Exception as e:
                     speak("No result found")
-        
+
             # show time
             elif 'time' in query:
                 strTime = datetime.datetime.now().strftime("%H:%M:%S")
@@ -249,25 +272,26 @@ class MainThread(QThread):
                 print(ip)
                 speak(f"Your ip address is {ip}")
 
-            #play music
+            # play music
             elif 'play music' in query or 'music' in query:
                 noti("Playing music")
                 music_dir = 'D:\\Jay voice assisatant\\music'
                 songs = os.listdir(music_dir)
                 os.startfile(os.path.join(music_dir, songs[0]))
-                
+
             # switch the window
             elif "switch the window" in query or "switch window" in query:
                 speak("Okay sir, Switching the window")
                 pyautogui.keyDown("alt")
                 pyautogui.press("tab")
-                pyautogui.keyUp("alt")        
+                pyautogui.keyUp("alt")
 
             # serching on youtube
             elif 'play' in query:
                 query = query . replace("play", "")
                 speak("serching on youtube")
-                webbrowser.open("https://www.youtube.com/results?search_query="+query)
+                webbrowser.open(
+                    "https://www.youtube.com/results?search_query="+query)
 
             # python jokes
             elif'jokes' in query or 'jokes' in query:
@@ -278,9 +302,9 @@ class MainThread(QThread):
 
             # sending Mail to contact
             elif 'send email to' in query:
-            # query=query.replace('send email to ','')
-            # name=query
-            # receiver=email_list[name]
+                # query=query.replace('send email to ','')
+                # name=query
+                # receiver=email_list[name]
                 try:
                     speak("What should I say?")
                     content = takeCommand()
@@ -303,7 +327,8 @@ class MainThread(QThread):
                 soup = BeautifulSoup(html, 'html.parser')
                 temp = soup.find(
                     'div', attrs={'class': 'BNeawe iBp4i AP7Wnd'}).text
-                str = soup.find('div', attrs={'class': 'BNeawe tAd8D AP7Wnd'}).text
+                str = soup.find(
+                    'div', attrs={'class': 'BNeawe tAd8D AP7Wnd'}).text
                 data = str.split('\n')
                 time = data[0]
                 sky = data[1]
@@ -341,11 +366,12 @@ class MainThread(QThread):
                 file = open("voice.txt", "r")
                 print(file.read())
                 speak(file)
-        
+
             # opening website using Mysql Database
             elif 'open ' in query:
                 query = query . replace('open ', '')
-                con = mysql.connector.connect(host="localhost", user="root", passwd="Krishna@123", database="voice")
+                con = mysql.connector.connect(
+                    host="localhost", user="root", passwd="Krishna@123", database="voice")
                 mycursor = con.cursor()
                 sql2 = "select * from `voiceweb` where `search` like '"+query+"';"
                 mycursor.execute(sql2)
@@ -367,13 +393,14 @@ class MainThread(QThread):
                     _, thresh = cv2.threshold(blur, 20, 255, cv2.THRESH_BINARY)
                     dilated = cv2.dilate(thresh, None, iterations=3)
                     contours, _ = cv2.findContours(
-                    dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                        dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
                     cv2.drawContours(frame1, contours, -1, (0, 255, 0), 2)
                     for c in contours:
                         if cv2.contourArea(c) < 5000:
-                           continue
+                            continue
                         x, y, w, h = cv2.boundingRect(c)
-                        cv2.rectangle(frame1, (x, y), (x+w, y+h), (200, 255, 0), 2)
+                        cv2.rectangle(frame1, (x, y), (x+w, y+h),
+                                      (200, 255, 0), 2)
                         speak("Security alert Some one is founnd on camera")
                         try:
                             receiver = 'krishvishwa888@gmail.com'
@@ -386,8 +413,8 @@ class MainThread(QThread):
                         speak("Exit High security mode")
                         break
                     cv2.imshow('Jay Security Eye', frame1)
-        
-            # Normal Mode for open camera   
+
+            # Normal Mode for open camera
             elif 'normal check' in query or 'who is there' in query or 'check' in query:
                 speak("webcam are startings")
                 cap = cv2.VideoCapture(0)
@@ -398,11 +425,14 @@ class MainThread(QThread):
                     faces = cv2.cvtColor(faces, cv2.COLOR_BGR2RGB)
 
                     facesCurrentFrame = face_recognition.face_locations(faces)
-                    encodesCurrentFrame = face_recognition.face_encodings(faces, facesCurrentFrame)
+                    encodesCurrentFrame = face_recognition.face_encodings(
+                        faces, facesCurrentFrame)
 
                     for encodeFace, faceLoc in zip(encodesCurrentFrame, facesCurrentFrame):
-                        matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
-                        faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
+                        matches = face_recognition.compare_faces(
+                            encodeListKnown, encodeFace)
+                        faceDis = face_recognition.face_distance(
+                            encodeListKnown, encodeFace)
                         # print(faceDis)
                         matchIndex = np.argmin(faceDis)
 
@@ -411,9 +441,12 @@ class MainThread(QThread):
                             # print(name)
                             y1, x2, y2, x1 = faceLoc
                             y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                            cv2.rectangle(frame, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
-                            cv2.putText(frame, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
+                            cv2.rectangle(frame, (x1, y1),
+                                          (x2, y2), (0, 255, 0), 2)
+                            cv2.rectangle(frame, (x1, y2 - 35),
+                                          (x2, y2), (0, 255, 0), cv2.FILLED)
+                            cv2.putText(
+                                frame, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
                             entry(name)
 
                     cv2.imshow('Webcam', frame)
@@ -423,11 +456,13 @@ class MainThread(QThread):
 
                 cap.release()
                 cv2.destroyAllWindows()
-               
-            
+
+
 startExecution = MainThread()
 
 # Gui code is here
+
+
 class Main(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -441,6 +476,7 @@ class Main(QMainWindow):
 
     def run(self):
         self.TaskExection
+
     def startTask(self):
         self.ui.movie = QtGui.QMovie("Jarvis/utils/images/live_wallpaper.gif")
         self.ui.label.setMovie(self.ui.movie)
@@ -455,6 +491,7 @@ class Main(QMainWindow):
         label_date = current_date.toString(Qt.ISODate)
         self.ui.textBrowser.setText(label_date)
         self.ui.textBrowser_2.setText(label_time)
+
 
 app = QApplication(sys.argv)
 jarvis = Main()
